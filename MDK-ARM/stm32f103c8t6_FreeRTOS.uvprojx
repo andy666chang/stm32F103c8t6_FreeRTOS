@@ -412,6 +412,11 @@
               <FileType>1</FileType>
               <FilePath>..\Src\board_task_init.c</FilePath>
             </File>
+            <File>
+              <FileName>cli.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\cli.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

@@ -18,6 +18,9 @@ void board_init_task(void *pvParameters) {
     // init function
     xTaskCreate( led_toggle_task, (const char *) "LED_toggle", configMINIMAL_STACK_SIZE,NULL, mainTIME_TASK_PRIORITY, NULL );
 
+    extern void cli_task(void *pvParameters);
+    xTaskCreate( cli_task, (const char *) "cli_task" , 1024,NULL, mainTIME_TASK_PRIORITY, NULL );
+
     vTaskDelete(NULL);
 }
 

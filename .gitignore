@@ -2,3 +2,4 @@
 
 *.dbgconf
 MDK-ARM/Output/*
+MDK-ARM/JLinkLog.txt
