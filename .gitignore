@@ -1,0 +1,4 @@
+# Specify filepatterns you want git to ignore.
+
+*.dbgconf
+MDK-ARM/Output/*
