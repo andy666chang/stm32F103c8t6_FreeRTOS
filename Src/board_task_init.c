@@ -1,6 +1,6 @@
 
-
 #include "board_task.h"
+#include "SEGGER_RTT.h"
 
 // APP task
 void led_toggle_task(void *pvParameters) {
@@ -24,5 +24,5 @@ void board_init_task(void *pvParameters) {
 void board_init_task_create(void) {
     // Create init task function
     xTaskCreate( board_init_task, (const char *) "board_init_task", configMINIMAL_STACK_SIZE,NULL, mainTIME_TASK_PRIORITY, NULL );
-
+    SEGGER_RTT_printf(0, "RTOS Start!\n");
 }
