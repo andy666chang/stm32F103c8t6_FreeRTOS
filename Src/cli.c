@@ -22,11 +22,17 @@ void _cli_reboot_(uint8_t len , void *param[] );
 void _cli_rtt_clear_(uint8_t len , void *param[] );
 void _cli_rtt_color_(uint8_t len , void *param[] );
 
+void _cli_os_ver_(uint8_t len , void *param[] );
+void _cli_os_task_(uint8_t len , void *param[] );
+void _cli_os_mem_(uint8_t len , void *param[] );
+
 extern struct _cli_func_ rtt_func[];
+extern struct _cli_func_ os_func[];
 
 #define __CLI_TABLE__       { "?"       , "dump all func"  , _cli_dump_     , NULL     },\
                             { "reboot"  , "reboot"         , _cli_reboot_   , NULL     },\
                             { "rtt"     , "RTT config"     , NULL           , rtt_func },\
+                            { "os"      , "os info"        , NULL           , os_func  },\
                             { NULL      , NULL             , NULL           , NULL     },\
 
 
@@ -34,7 +40,11 @@ extern struct _cli_func_ rtt_func[];
                             { "color"   , "set color"      , _cli_rtt_color_ , NULL     },\
                             { NULL      , NULL             , NULL            , NULL     },\
                             
-
+#define __OS_TABLE__        { "ver"     , "os version"     , _cli_os_ver_    , NULL     },\
+                            { "task"    , "tasks info"     , _cli_os_task_   , NULL     },\
+                            { "mem"     , "Get memory"     , _cli_os_mem_   , NULL     },\
+                            { NULL      , NULL             , NULL            , NULL     },\
+                            
 
 struct _cli_func_ cli_func[] = {
     __CLI_TABLE__
@@ -43,6 +53,10 @@ struct _cli_func_ cli_func[] = {
 
 struct _cli_func_ rtt_func[] = {
     __RTT_TABLE__
+};
+
+struct _cli_func_ os_func[] = {
+    __OS_TABLE__
 };
 
 
@@ -106,6 +120,32 @@ void _cli_rtt_color_(uint8_t len , void *param[] )
 
 }
 
+void _cli_os_ver_(uint8_t len , void *param[] )
+{
+    SEGGER_RTT_printf(0, "OS: FreeRTOS %s\n",tskKERNEL_VERSION_NUMBER);
+    SEGGER_RTT_printf(0, "Build time: %s %s\n", __DATE__, __TIME__);
+}
+
+void _cli_os_task_(uint8_t len , void *param[] )
+{
+    char *pWriteBuffer = pvPortMalloc(64);
+    if( pWriteBuffer == NULL )
+    {
+        SEGGER_RTT_printf(0,"%s pvPortMalloc error!\n",__FUNCTION__);
+        return;
+    }
+    vTaskList(pWriteBuffer);
+    SEGGER_RTT_printf(0,"task_name   state  priority   stack  task_num\n");
+    SEGGER_RTT_printf(0,"%s\n",pWriteBuffer);
+    vPortFree(pWriteBuffer);
+}
+
+void _cli_os_mem_(uint8_t len , void *param[] )
+{
+    SEGGER_RTT_printf(0,"Heap:\n");
+    SEGGER_RTT_printf(0,"\tTotal: %d\n",configTOTAL_HEAP_SIZE);
+    SEGGER_RTT_printf(0,"\tFree:  %d\n",xPortGetFreeHeapSize());
+}
 
 static int8_t parse_cli( uint8_t len , char *param[] , struct _cli_func_ commands[] )
 {    
